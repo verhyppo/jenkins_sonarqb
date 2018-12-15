@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage ('Checkout')
+        stage ('Checkout') {
 
         slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
 
