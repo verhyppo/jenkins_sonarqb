@@ -3,13 +3,14 @@ pipeline {
     stages {
         stage ('Checkout') {
 
-        slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+            slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
 
-        checkout scm
+            checkout scm
 
-        stage 'Gradle Static Analysis'
-        withSonarQubeEnv {
-            sh "./gradlew clean sonarqube"
+            stage 'Gradle Static Analysis'
+            withSonarQubeEnv {
+                sh "./gradlew clean sonarqube"
+            }
         }
     }
     post {
