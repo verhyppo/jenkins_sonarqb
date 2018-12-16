@@ -3,40 +3,32 @@ node {
     // def nodeHome = tool name: 'node-4.4.7', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
     // env.PATH = "${nodeHome}/bin:${env.PATH}"
     try {
-        /*    stage('check tools') {
-                sh "node -v"
-                sh "npm -v"
-                sh "bower -v"
-                sh "gulp -v"
-            }*/
+        stage('checkout') {
+            checkout scm
+        }
 
-            stage('checkout') {
-                checkout scm
-            }
+        stage('clean package') {
+            sh "./mvnw package -DskipTests"
+        }
 
-            stage('clean package') {
-                sh "./mvnw package -DskipTests"
+        stage('SONAR static analysis') {
+            withSonarQubeEnv {
+                sh "./mvnw clean sonar:sonar"
             }
+        }
 
-            stage('SONAR static analysis') {
-                withSonarQubeEnv {
-                    sh "./mvnw clean sonar:sonar"
-                }
+        stage("SONAR quality gate") {
+          sleep(10);
+          timeout(time: 1, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
+            def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+            if (qg.status != 'OK') {
+              error "Pipeline aborted due to quality gate failure: ${qg.status}"
             }
+          }
+        }
 
-            stage("SONAR quality gate") {
-              sleep(10);
-              timeout(time: 1, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
-                def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-                if (qg.status != 'OK') {
-                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                }
-              }
-            }
-
-            stage('packaging') {
-                sh "./mvnw package -Pprod -DskipTests"
-            }
+        stage('packaging') {
+            sh "./mvnw package -Pprod -DskipTests"
         }
     } finally {
         slackSend(channel: "@veronica.digiorgio", message: "build Finished")
