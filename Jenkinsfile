@@ -20,4 +20,7 @@ stage("Quality Gate"){
 }
 post {
 	slackSend(channel: "@veronica.digiorgio", message: "Thread reply #1")
+	failure {
+	    slackSend(channel: "@veronica.digiorgio", message: "FAIL")
+	}
 }
