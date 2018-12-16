@@ -18,3 +18,6 @@ stage("Quality Gate"){
     }
   }
 }
+post {
+	slackSend(channel: "UELV42KJ8", message: "Thread reply #1")
+}
