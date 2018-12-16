@@ -19,5 +19,5 @@ stage("Quality Gate"){
   }
 }
 post {
-	slackSend(channel: "UELV42KJ8", message: "Thread reply #1")
+	slackSend(channel: "@veronica.digiorgio", message: "Thread reply #1")
 }
