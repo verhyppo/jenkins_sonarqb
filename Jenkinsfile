@@ -14,12 +14,8 @@ node {
         checkout scm
     }
 
-    stage('clean') {
-        sh "./mvnw clean"
-    }
-
-    stage('backend tests') {
-        sh "./mvnw test -X -Xmx1024m -XX:MaxPermSize=256m"
+    stage('clean package') {
+        sh "./mvnw package"
     }
 
     stage('SONAR static analysis') {
