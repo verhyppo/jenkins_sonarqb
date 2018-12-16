@@ -15,7 +15,7 @@ node {
     }
 
     stage('clean package') {
-        sh "./mvnw package"
+        sh "./mvnw package -DskipTests"
     }
 
     stage('SONAR static analysis') {
