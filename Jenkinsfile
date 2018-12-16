@@ -19,7 +19,7 @@ node {
     }
 
     stage('backend tests') {
-        sh "./mvnw test"
+        sh "./mvnw test -X"
     }
 
     stage('SONAR static analysis') {
