@@ -19,7 +19,7 @@ node {
     }
 
     stage('backend tests') {
-        sh "./mvnw test -X"
+        sh "./mvnw test -X -Xmx1024m -XX:MaxPermSize=256m"
     }
 
     stage('SONAR static analysis') {
